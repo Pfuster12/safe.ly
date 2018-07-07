@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="toolbar_height">77dp</dimen>
+    <dimen name="cancel_icon_margin">34dp</dimen>
+    <dimen name="half_general_margin">8dp</dimen>
+    <dimen name="general_margin">16dp</dimen>
+    <dimen name="double_general_margin">32dp</dimen>
+    <dimen name="contact_button_height">32dp</dimen>
+    <dimen name="contact_button_margin_start">60dp</dimen>
+    <dimen name="main_button">260dp</dimen>
+    <dimen name="icon_dimen">14dp</dimen>
+</resources>

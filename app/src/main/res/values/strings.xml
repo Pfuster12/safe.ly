@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">safely</string>
+
+    <!-- Main Activity strings-->
+    <string name="toolbar_title">safe.ly</string>
+    <string name="contact_button">Add Contact</string>
+
+    <string name="share_text">Hey, check out this app to help you stay safe.</string>
+    <string name="share_chooser_title">Share App</string>
+
+
+    <!-- Contacts fragment strings -->
+    <string name="contacts_fragment_title">contacts</string>
+    <string name="add_contacts_prompt">Add Emergency Contacts Here</string>
+
+    <string name="name_placeholder_string">%1$s</string>
+    <string name="number_placeholder_string">%1$s</string>
+
+    <string name="content_description_contact_action">contacts</string>
+    <string name="content_description_share_action">share</string>
+    <string name="content_description_cancel_action">Cancel</string>
+
+</resources>

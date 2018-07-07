@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/contacts_fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/contacts_fragment_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/toolbar_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/contacts_fragment_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/general_margin"
+            android:paddingEnd="@dimen/general_margin"
+            android:text="@string/contacts_fragment_title"
+            style="@style/ToolbarTitle" />
+    </android.support.v7.widget.Toolbar>
+
+    <ListView
+        android:id="@+id/contacts_list_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/double_general_margin"
+        android:layout_marginEnd="@dimen/general_margin"
+        android:layout_marginBottom="@dimen/general_margin"
+        app:layout_constraintTop_toBottomOf="@id/contacts_fragment_toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/add_contacts_prompt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/add_contacts_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_contacts_prompt"
+        style="@style/TertiaryTextTheme"
+        android:layout_marginBottom="@dimen/general_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/contacts_list_view" />
+</android.support.constraint.ConstraintLayout>
