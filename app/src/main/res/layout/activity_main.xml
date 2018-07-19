@@ -55,6 +55,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <View
+        android:id="@+id/safely_press_expand"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/circle_button"
+        app:layout_constraintStart_toStartOf="@id/safely_button"
+        app:layout_constraintEnd_toEndOf="@id/safely_button"
+        app:layout_constraintTop_toTopOf="@id/safely_button"
+        app:layout_constraintBottom_toBottomOf="@id/safely_button" />
+
     <Button
         android:id="@+id/add_contact_action_button"
         android:layout_width="wrap_content"

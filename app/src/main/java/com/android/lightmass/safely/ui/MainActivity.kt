@@ -1,5 +1,6 @@
 package com.android.lightmass.safely.ui
 
+import android.animation.Animator
 import android.app.Activity
 import android.app.LoaderManager
 import android.arch.lifecycle.Observer
@@ -29,6 +30,7 @@ import com.android.lightmass.safely.viewmodel.ContactsViewModel
 const val REQUEST_SELECT_CONTACT = 1
 const val LOADER_CONTACT_ID = 0
 const val LOADER_URI_KEY = "com.android.lightmass.safely.ui.LOADER_URI_KEY"
+const val ANIMATION_DURATION = 1000
 
 /**
  * This class is concerned with the logic of the main activity UI. The big, red,
@@ -36,7 +38,7 @@ const val LOADER_URI_KEY = "com.android.lightmass.safely.ui.LOADER_URI_KEY"
  * in the button. The contacts menu slides from the right when the button is pressed, however
  * the logic for its ui lives in another fragment.
  */
-class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
+class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>, Animator.AnimatorListener {
 
     /**
      * Global variables
@@ -132,7 +134,91 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
             shareAction()
         }
 
-        //onTouchDrawerFunctionality()
+        // set the safely button press
+        safely_button.setOnTouchListener { v, event ->
+            // grab the action
+            return@setOnTouchListener when (event.actionMasked) {
+                // when the user presses down
+                MotionEvent.ACTION_DOWN -> {
+                    onSafelyButtonPressed()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    cancelAnimation()
+                    true
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    cancelAnimation()
+                    true
+                }
+                else -> true
+            }
+
+            // return true on the press
+            return@setOnTouchListener true
+        }
+    }
+
+    private fun cancelAnimation() {
+        safely_press_expand.animate().setListener(null)
+        // and repeat the animation
+        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong())
+                .withEndAction {
+                    // and set the values back to 1,
+                    safely_press_expand.scaleX = 1f
+                    safely_press_expand.scaleY = 1f
+                    safely_press_expand.alpha = 1f
+                }
+    }
+
+    override fun onAnimationRepeat(animation: Animator?) {
+        // do something
+    }
+
+    // when the animation ends,
+    override fun onAnimationEnd(animation: Animator?) {
+        // set the values back to 1,
+        safely_press_expand.scaleX = 1f
+        safely_press_expand.scaleY = 1f
+        safely_press_expand.alpha = 1f
+        // and repeat the animation
+        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong()).setListener(this)
+    }
+
+    override fun onAnimationCancel(animation: Animator?) {
+        safely_press_expand.animate().setListener(null)
+        // when the user lifts the finger, wait until the animation ends,
+        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong())
+                .withEndAction {
+                    // and set the values back to 1,
+                    safely_press_expand.scaleX = 1f
+                    safely_press_expand.scaleY = 1f
+                    safely_press_expand.alpha = 1f
+                }
+    }
+
+    override fun onAnimationStart(animation: Animator?) {
+        // do something
+    }
+
+    /**
+     * Convenience method to set the safely button press functionality.
+     */
+    private fun onSafelyButtonPressed() {
+        // expand the x,
+        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        // expand the y,
+        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        // finally reduce alpha to 0,
+        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong())
+                // then set a listener,
+                .setListener(this)
     }
 
     /**
@@ -198,46 +284,10 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> 
         else dark_screen.animate().alpha(0f).start()
     }
 
-/*
-    private fun onTouchDrawerFunctionality() {
-        // init vars for the original touch coordinates
-        var downRawX = 0f
-
-        // var to store previous y change in coordinates
-        var oldXChange = 0f
-
-        contacts_fragment_frame.setOnTouchListener { v, event ->
-            // cycle through events
-            when (event?.actionMasked) {
-            // when finger is down
-                MotionEvent.ACTION_DOWN -> {
-                    // get original coordinates
-                    downRawX = event.rawX
-                    return@setOnTouchListener true
-                }
-            // when finger moves,
-                MotionEvent.ACTION_MOVE -> {
-                    // calculate change in coordinates of finger move
-                    val xChange = event.rawX - downRawX
-                    Log.e("DRAWERDRAG", (xChange - oldXChange).toString())
-                    val dragChange = xChange - oldXChange
-                    contacts_fragment_frame.x += dragChange
-                    // set the current xChange to the old change for next move action
-                    oldXChange = xChange
-                    return@setOnTouchListener true
-                }
-                MotionEvent.ACTION_UP -> {
-                    return@setOnTouchListener true
-                }
-                else -> return@setOnTouchListener true
-            }
-        }
-    }*/
-
     /**
      * Helper fun to show/hide add contacts button with a spring anim
      */
-    private fun showAddContactButton() {
+    fun showAddContactButton() {
         // get the original y position of the add contact button by adding the margin
         // plus its height
         addContactY = screenHeight -
