@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
                         if (it.resolveActivity(packageManager) != null) {
                             startActivityForResult(it, REQUEST_SELECT_CONTACT)
                         }
-                    }
+            }
         }
 
         /*
@@ -153,12 +153,13 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
                 }
                 else -> true
             }
-
-            // return true on the press
-            return@setOnTouchListener true
         }
     }
 
+    /**
+     * Convenience method to launch a last animation and set the press animation view
+     * back to default values.
+     */
     private fun cancelAnimation() {
         safely_press_expand.animate().setListener(null)
         // and repeat the animation
@@ -189,18 +190,9 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
         safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong()).setListener(this)
     }
 
+    // when the animation is cancelled,
     override fun onAnimationCancel(animation: Animator?) {
-        safely_press_expand.animate().setListener(null)
-        // when the user lifts the finger, wait until the animation ends,
-        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
-        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
-        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong())
-                .withEndAction {
-                    // and set the values back to 1,
-                    safely_press_expand.scaleX = 1f
-                    safely_press_expand.scaleY = 1f
-                    safely_press_expand.alpha = 1f
-                }
+       cancelAnimation()
     }
 
     override fun onAnimationStart(animation: Animator?) {
