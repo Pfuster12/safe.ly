@@ -99,10 +99,10 @@
             android:id="@+id/slide_contacts_action"
             android:layout_width="@dimen/icon_dimen"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/general_margin"
+            android:paddingStart="@dimen/general_margin"
             android:src="@drawable/ic_chevron_right"
             android:tint="@color/colorPrimaryDark"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackground"
             android:elevation="10dp"
             android:layout_gravity="center_vertical"/>
 
@@ -143,10 +143,4 @@
         app:layout_constraintBottom_toTopOf="@id/add_contact_action_button"
         android:animateLayoutChanges="true"
         android:orientation="vertical"/>
-
-    <Button
-        android:id="@+id/show_bubble_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SHOW BUBBLE"/>
 </android.support.constraint.ConstraintLayout>

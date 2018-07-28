@@ -17,6 +17,9 @@
     <string name="share_text">Hey, check out this app to help you stay safe.</string>
     <string name="share_chooser_title">Share App</string>
 
+    <string name="welcome_message">An app to help you get places safe.</string>
+
+    <string name="timer_message_bubble">Sending emergency texts in %1$d&#8230;</string>
 
     <!-- Contacts fragment strings -->
     <string name="contacts_fragment_title">contacts</string>
@@ -28,5 +31,10 @@
     <string name="content_description_contact_action">contacts</string>
     <string name="content_description_share_action">share</string>
     <string name="content_description_cancel_action">Cancel</string>
+    <string name="empty_contacts_text">There are no contacts yet. Use the add button in the main screen</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

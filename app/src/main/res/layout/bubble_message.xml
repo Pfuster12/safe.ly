@@ -15,11 +15,11 @@
         android:layout_marginStart="@dimen/double_general_margin"
         android:layout_marginEnd="@dimen/double_general_margin"
         tools:text="@tools:sample/lorem"
+        style="@style/TertiaryTextTheme"
         android:maxLines="5"
-        android:background="@drawable/rounded_button"
-        android:backgroundTint="@color/colorPrimaryDark"
+        android:background="@drawable/bubble"
         android:textColor="@color/colorPrimary"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"/>
+        android:layout_gravity="center"
+        android:gravity="center" />
 
 </FrameLayout>

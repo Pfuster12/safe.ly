@@ -14,6 +14,7 @@ import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.preference.PreferenceManager
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract
 import android.support.animation.DynamicAnimation
@@ -21,6 +22,7 @@ import android.support.animation.SpringAnimation
 import android.support.animation.SpringForce
 import android.support.v4.app.ActivityCompat
 import android.telephony.SmsManager
+import android.transition.Fade
 import com.android.lightmass.safely.R
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.DisplayMetrics
@@ -40,9 +42,9 @@ const val REQUEST_SELECT_CONTACT = 1
 const val LOADER_CONTACT_ID = 0
 const val LOADER_URI_KEY = "com.android.lightmass.safely.ui.LOADER_URI_KEY"
 const val ANIMATION_DURATION = 1500
-const val TIMER_DURATION = 3000
+const val TIMER_DURATION = 4000
 const val COUNTDOWN_INTERVAL = 1000
-
+const val WELCOME_SHOWN_PREFS = "com.android.lightmass.safely.ui.WELCOME_SHOWN_PREFS"
 
 /**
  * This class is concerned with the logic of the main activity UI. The big, red,
@@ -88,7 +90,15 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // set window transitions
+        window.enterTransition = Fade()
+        window.allowEnterTransitionOverlap = true
         setContentView(R.layout.activity_main)
+
+        // show welcome screen if its the first time opening the app,
+        showWelcomeScreenFirstTime()
+
+        postponeEnterTransition()
 
         // grab the screen width and height
         DisplayMetrics().also { windowManager.defaultDisplay.getMetrics(it) }
@@ -154,10 +164,26 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
             onSafelyButtonPressed(event)
         }
 
-        show_bubble_temp.setOnClickListener {
-            addMessageBubble("Sent SMS to Amelia...")
+        startPostponedEnterTransition()
+    }
+
+    /**
+     * Convenience method to show the welcome screen activity if its the first time
+     * the user has seen it.
+     */
+    private fun showWelcomeScreenFirstTime() {
+        // grab the preferences,
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        // if the screen hasn't been shown,
+        if (prefs.getBoolean(WELCOME_SHOWN_PREFS, true)) {
+            // set the prefs to true,
+            prefs.edit().putBoolean(WELCOME_SHOWN_PREFS, true).apply()
+            // start the welcome activity
+            Intent(this, WelcomeScreenActivity::class.java).also { startActivity(it) }
         }
     }
+
 
     /**
      * Helper fun to initialize the view model and observe the contacts live data held
@@ -231,7 +257,8 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
 
 
             override fun onTick(millisUntilFinished: Long) {
-                // do something
+                addMessageBubble(getString(R.string.timer_message_bubble, millisUntilFinished.div(1000)),
+                        COUNTDOWN_INTERVAL.toLong().div(2))
             }
         }.start()
     }
@@ -252,7 +279,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
             // compose a message to inform the user,
             val message = getString(R.string.sms_sent_placeholder, contact.name)
             // send out a message bubble,
-            addMessageBubble(message)
+            addMessageBubble(message, TIMER_DURATION.toLong())
         }
     }
 
@@ -260,7 +287,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
      * Convenience method to add a message bubble informing the user of information or actions
      * taking place.
      */
-    private fun addMessageBubble(message: String) {
+    private fun addMessageBubble(message: String, displayTime: Long) {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS),1);
         // inflate,
         val bubble = LayoutInflater.from(this).inflate(R.layout.bubble_message, message_bubble_container, false)
@@ -274,7 +301,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
         message_bubble_container.addView(bubble)
         bubble.animate().alpha(1f).setDuration(ANIMATION_DURATION.toLong()).withEndAction {
             // set the global timer to a Countdown clock,
-            object : CountDownTimer(TIMER_DURATION.toLong(), COUNTDOWN_INTERVAL.toLong()) {
+            object : CountDownTimer(displayTime, COUNTDOWN_INTERVAL.toLong()) {
                 // on finish remove message
                 override fun onFinish() {
                     removeMessageBubble(bubble)
@@ -291,7 +318,6 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
      * Convenience method to remove bubble with an animation
      */
     private fun removeMessageBubble(bubble: View) {
-        //bubble.visibility = View.VISIBLE
         message_bubble_container.removeView(bubble)
     }
 

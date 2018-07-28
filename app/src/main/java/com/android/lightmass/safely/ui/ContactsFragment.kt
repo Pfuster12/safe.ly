@@ -13,6 +13,7 @@ import com.android.lightmass.safely.R
 import com.android.lightmass.safely.pojos.Contact
 import kotlinx.android.synthetic.main.fragment_contacts.view.*
 import com.android.lightmass.safely.viewmodel.ContactsViewModel
+import kotlinx.android.synthetic.main.fragment_contacts.*
 
 
 /**
@@ -61,8 +62,7 @@ class ContactsFragment : Fragment() {
                     container,
                     false).let { root: View? ->
                 // init the contacts list,
-                contacts = mutableListOf(Contact("Potato Man",
-                        "7490776869"))
+                contacts = mutableListOf()
 
                 // set adapter with helper function,
                 setAdapter(root)
@@ -101,7 +101,11 @@ class ContactsFragment : Fragment() {
                                 "07490776869")))
                         // finally notify the data change
                         adapter?.notifyDataSetChanged()
+                        // hide the empty view
+                        empty_view.visibility = View.GONE
                     }
+                    // show empty view if data is empty
+                    if (data == null || data.isEmpty()) {empty_view.visibility = View.VISIBLE}
                 })
     }
 
@@ -129,9 +133,7 @@ class ContactsFragment : Fragment() {
 
             // grab the list item view layout
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?) =
-                convertView.let { it ?: layoutInflater.inflate(R.layout.contact_list_item,
-                        parent,
-                        false)}
+                convertView ?: layoutInflater.inflate(R.layout.contact_list_item, parent, false)
                         .apply {
                             val currentItem = getItem(position)
                             // grab the name textview from list item & set the text of current name,
@@ -146,5 +148,8 @@ class ContactsFragment : Fragment() {
                         }
         }
         root?.contacts_list_view?.adapter = adapter
+
+        // if contacts is empty show the empty view
+        if (contacts == null || (contacts as MutableList).isEmpty()) { root?.empty_view?.visibility = View.VISIBLE}
     }
 }

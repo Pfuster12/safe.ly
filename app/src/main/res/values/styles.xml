@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor" tools:targetApi="23">@color/colorPrimary</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <!-- Toolbar theme -->
@@ -39,6 +40,13 @@
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/quicksand_regular</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <!-- Splash app name text theme -->
+    <style name="SplashTitleTheme" parent="TextAppearance.AppCompat.Display3">
+        <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
 </resources>
