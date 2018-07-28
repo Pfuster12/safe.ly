@@ -82,14 +82,6 @@ class ContactsRepo {
                 .let {
                     WorkManager.getInstance()?.enqueue(it)
                 }
-       /* try {
-            executor?.submit {
-                // save the new images
-                contactsDAO?.save(contact)
-            }?.get()
-        } catch (e: Exception) {
-            Log.e("REPO_SAVEALL", e.toString())
-        }*/
     }
 
     /**

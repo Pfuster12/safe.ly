@@ -9,4 +9,5 @@
     <dimen name="contact_button_margin_start">60dp</dimen>
     <dimen name="main_button">260dp</dimen>
     <dimen name="icon_dimen">14dp</dimen>
+    <dimen name="bubble_min_width">220dp</dimen>
 </resources>

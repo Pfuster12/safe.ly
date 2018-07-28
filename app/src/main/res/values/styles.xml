@@ -21,8 +21,10 @@
     <!-- Add contact button style -->
     <style name="ContactButton" parent="Base.Widget.AppCompat.Button">
         <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/add_contact_text_color
+        </item>
         <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
     <!-- Secondary text theme -->

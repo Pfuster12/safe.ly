@@ -40,7 +40,6 @@ class ContactsFragment : Fragment() {
 
     // create a companion function for instance creation
     companion object {
-
         // make the fragment a val,
         private var contactsFragment: ContactsFragment? = null
 
@@ -51,10 +50,6 @@ class ContactsFragment : Fragment() {
     /**
      * Functions
      */
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
 
     /**
      * The on create of the fragment view.
@@ -93,8 +88,6 @@ class ContactsFragment : Fragment() {
         ViewModelProviders.of(requireActivity())
                 // of the contacts view model,
                 .get(ContactsViewModel::class.java)
-                // init the repo instance,
-                //.init(this.context)
                 // grab the live data from the database,
                 .getContacts()
                 // observe it...
@@ -104,7 +97,7 @@ class ContactsFragment : Fragment() {
                         //clear the list first,
                         clear()
                         // and add new contacts to it,
-                        addAll(data ?: listOf(Contact("Potato Man",
+                        addAll(data ?: listOf(Contact("Example Number",
                                 "07490776869")))
                         // finally notify the data change
                         adapter?.notifyDataSetChanged()

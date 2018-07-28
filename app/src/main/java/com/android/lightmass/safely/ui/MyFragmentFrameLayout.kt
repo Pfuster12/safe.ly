@@ -126,17 +126,19 @@ class MyFragmentFrameLayout : FrameLayout {
                     when (this.x) {
                         in 0f..screenWidth -> {
                             this.x += dragChange
+                            // change the alpha of the dark screen with the drag
+                            activityContext.dark_screen.alpha -= (dragChange / range)
                         }
                     }
                 } else if (dragChange < 0) {
                     when (this.x) {
                         in openX..screenWidth -> {
                             this.x += dragChange
+                            // change the alpha of the dark screen with the drag
+                            activityContext.dark_screen.alpha -= (dragChange / range)
                         }
                     }
                 }
-                // change the alpha of the dark screen with the drag
-                activityContext.dark_screen.alpha -= (dragChange / range)
 
                 // store the change
                 oldXChange = changeX
@@ -169,7 +171,7 @@ class MyFragmentFrameLayout : FrameLayout {
                                 }
                     }
                     // when it is not,
-                    in 0f..closingThreshold -> {
+                    in -screenWidth..closingThreshold -> {
                         // animate fragment to the open guideline x position again,
                         SpringAnimation(this, DynamicAnimation.X, openX)
                                 .run {

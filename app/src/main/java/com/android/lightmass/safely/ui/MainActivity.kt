@@ -1,5 +1,6 @@
 package com.android.lightmass.safely.ui
 
+import android.Manifest
 import android.animation.Animator
 import android.app.Activity
 import android.app.LoaderManager
@@ -12,25 +13,36 @@ import android.database.Cursor
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract
 import android.support.animation.DynamicAnimation
 import android.support.animation.SpringAnimation
 import android.support.animation.SpringForce
+import android.support.v4.app.ActivityCompat
+import android.telephony.SmsManager
 import com.android.lightmass.safely.R
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import com.android.lightmass.safely.pojos.Contact
 import com.android.lightmass.safely.viewmodel.ContactsViewModel
+import kotlinx.android.synthetic.main.bubble_message.view.*
+import android.util.TypedValue.COMPLEX_UNIT_DIP
+import android.widget.LinearLayout
 
 // constants
 const val REQUEST_SELECT_CONTACT = 1
 const val LOADER_CONTACT_ID = 0
 const val LOADER_URI_KEY = "com.android.lightmass.safely.ui.LOADER_URI_KEY"
-const val ANIMATION_DURATION = 1000
+const val ANIMATION_DURATION = 1500
+const val TIMER_DURATION = 3000
+const val COUNTDOWN_INTERVAL = 1000
+
 
 /**
  * This class is concerned with the logic of the main activity UI. The big, red,
@@ -49,6 +61,9 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
 
     // view model instance
     private var viewModel: ContactsViewModel? = null
+
+    // timer for the button countdown till sending alerts
+    private var timer: CountDownTimer? = null
 
     // contacts menu showing boolean
     var isContactsMenuShown = false
@@ -136,81 +151,12 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
 
         // set the safely button press
         safely_button.setOnTouchListener { v, event ->
-            // grab the action
-            return@setOnTouchListener when (event.actionMasked) {
-                // when the user presses down
-                MotionEvent.ACTION_DOWN -> {
-                    onSafelyButtonPressed()
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    cancelAnimation()
-                    true
-                }
-                MotionEvent.ACTION_CANCEL -> {
-                    cancelAnimation()
-                    true
-                }
-                else -> true
-            }
+            onSafelyButtonPressed(event)
         }
-    }
 
-    /**
-     * Convenience method to launch a last animation and set the press animation view
-     * back to default values.
-     */
-    private fun cancelAnimation() {
-        safely_press_expand.animate().setListener(null)
-        // and repeat the animation
-        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
-        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
-        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong())
-                .withEndAction {
-                    // and set the values back to 1,
-                    safely_press_expand.scaleX = 1f
-                    safely_press_expand.scaleY = 1f
-                    safely_press_expand.alpha = 1f
-                }
-    }
-
-    override fun onAnimationRepeat(animation: Animator?) {
-        // do something
-    }
-
-    // when the animation ends,
-    override fun onAnimationEnd(animation: Animator?) {
-        // set the values back to 1,
-        safely_press_expand.scaleX = 1f
-        safely_press_expand.scaleY = 1f
-        safely_press_expand.alpha = 1f
-        // and repeat the animation
-        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
-        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
-        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong()).setListener(this)
-    }
-
-    // when the animation is cancelled,
-    override fun onAnimationCancel(animation: Animator?) {
-       cancelAnimation()
-    }
-
-    override fun onAnimationStart(animation: Animator?) {
-        // do something
-    }
-
-    /**
-     * Convenience method to set the safely button press functionality.
-     */
-    private fun onSafelyButtonPressed() {
-        // expand the x,
-        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
-        // expand the y,
-        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
-        // finally reduce alpha to 0,
-        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong())
-                // then set a listener,
-                .setListener(this)
+        show_bubble_temp.setOnClickListener {
+            addMessageBubble("Sent SMS to Amelia...")
+        }
     }
 
     /**
@@ -222,7 +168,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
         contacts = mutableListOf()
         // create the view model and init the global variable,
         viewModel = ViewModelProviders.of(this).get(ContactsViewModel::class.java)
-                // init the repo,
+        // init the repo,
         viewModel?.init(this)
                 // get the live data instance,
                 ?.getContacts()
@@ -236,6 +182,140 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
                         addAll(data ?: listOf())
                     }
                 })
+    }
+
+    /**
+     * Convenience method to set the safely button press functionality.
+     */
+    private fun onSafelyButtonPressed(event: MotionEvent) = when(event.actionMasked) {
+        // when the user presses down
+            MotionEvent.ACTION_DOWN -> {
+                onSafelyButtonDown()
+                true
+            }
+            MotionEvent.ACTION_UP -> {
+                // cancel the timer on up
+                timer?.cancel()
+                // cancel animation
+                cancelAnimation()
+                true
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                cancelAnimation()
+                true
+            }
+            else -> true
+        }
+
+    /**
+     * Convenience method to set actions when the safely button is pressed down
+     */
+    private fun onSafelyButtonDown() {
+        // set the animation to expand,
+        safelyAnimationExpand()
+
+        // set the countdown timer to send alerts,
+        setTimerToAlert()
+    }
+
+    /**
+     * Convenience method to set the timer.
+     */
+    private fun setTimerToAlert() {
+        // set the global timer to a Countdown clock,
+        timer = object : CountDownTimer(TIMER_DURATION.toLong(), COUNTDOWN_INTERVAL.toLong()) {
+            // on finish send the alerts
+            override fun onFinish() {
+                sendSMSToContacts()
+            }
+
+
+            override fun onTick(millisUntilFinished: Long) {
+                // do something
+            }
+        }.start()
+    }
+
+    /**
+     * Convenience method to get the contacts phone numbers from the list subscribed
+     * to the [Contact] database.
+     */
+    private fun sendSMSToContacts() {
+        // iterate through the contacts,
+        for (contact in contacts ?: listOf<Contact>()) {
+            // get location,
+            val location = "Bath"
+            val time = "12:00"
+            // and send the sms through the manager for each contact
+            sendSMSHelper(contact.name, contact.mobile, arrayListOf(getString(R.string.help_text), getString(R.string.location_time_text, location, time)))
+
+            // compose a message to inform the user,
+            val message = getString(R.string.sms_sent_placeholder, contact.name)
+            // send out a message bubble,
+            addMessageBubble(message)
+        }
+    }
+
+    /**
+     * Convenience method to add a message bubble informing the user of information or actions
+     * taking place.
+     */
+    private fun addMessageBubble(message: String) {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS),1);
+        // inflate,
+        val bubble = LayoutInflater.from(this).inflate(R.layout.bubble_message, message_bubble_container, false)
+        // make the text show the message,
+        bubble.bubble_text.text = message
+        // add padding on top
+        (bubble.layoutParams as LinearLayout.LayoutParams)
+                .setMargins(0, 0, 0,
+                        TypedValue.applyDimension(COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
+        // and add the view,
+        message_bubble_container.addView(bubble)
+        bubble.animate().alpha(1f).setDuration(ANIMATION_DURATION.toLong()).withEndAction {
+            // set the global timer to a Countdown clock,
+            object : CountDownTimer(TIMER_DURATION.toLong(), COUNTDOWN_INTERVAL.toLong()) {
+                // on finish remove message
+                override fun onFinish() {
+                    removeMessageBubble(bubble)
+                }
+
+                override fun onTick(millisUntilFinished: Long) {
+                    // do something
+                }
+            }.start()
+        }.start()
+    }
+
+    /**
+     * Convenience method to remove bubble with an animation
+     */
+    private fun removeMessageBubble(bubble: View) {
+        //bubble.visibility = View.VISIBLE
+        message_bubble_container.removeView(bubble)
+    }
+
+    /**
+     * Convenience method to send sms to contacts throught the [SmsManager].
+     */
+    private fun sendSMSHelper(name: String?, number: String?, messages: ArrayList<String>) {
+        val joinedNumber = number?.replace(" ","")
+        // send sms,
+        SmsManager.getDefault().sendMultipartTextMessage(joinedNumber, null, messages, null, null)
+    }
+
+    /**
+     * Convenience method to expand the safely button in animation.
+     */
+    private fun safelyAnimationExpand() {
+        // expand the x,
+        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        // expand the y,
+        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        // finally reduce alpha to 0,
+        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong())
+                // then set a listener,
+                .setListener(this)
     }
 
     /**
@@ -330,6 +410,49 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
     }
 
     /**
+     * Convenience method to launch a last animation and set the press animation view
+     * back to default values.
+     */
+    private fun cancelAnimation() {
+        safely_press_expand.animate().setListener(null)
+        // and repeat the animation
+        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong())
+                .withEndAction {
+                    // and set the values back to 1,
+                    safely_press_expand.scaleX = 1f
+                    safely_press_expand.scaleY = 1f
+                    safely_press_expand.alpha = 1f
+                }
+    }
+
+    override fun onAnimationRepeat(animation: Animator?) {
+        // do something
+    }
+
+    // when the animation ends,
+    override fun onAnimationEnd(animation: Animator?) {
+        // set the values back to 1,
+        safely_press_expand.scaleX = 1f
+        safely_press_expand.scaleY = 1f
+        safely_press_expand.alpha = 1f
+        // and repeat the animation
+        safely_press_expand.animate().scaleX(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().scaleY(1.5f).setDuration(ANIMATION_DURATION.toLong())
+        safely_press_expand.animate().alpha(0f).setDuration(ANIMATION_DURATION.toLong()).setListener(this)
+    }
+
+    // when the animation is cancelled,
+    override fun onAnimationCancel(animation: Animator?) {
+        cancelAnimation()
+    }
+
+    override fun onAnimationStart(animation: Animator?) {
+        // do something
+    }
+
+    /**
      * Override to grab the contact data the user picks to add information
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -380,11 +503,13 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
                  * This is done in the main activity because a context instance is needed
                  * to access the content resolver. */
                 cursor?.let {
+                    // get the contact from the cursor,
                     it.moveToFirst()
                     Log.e("CURSOR", it.getString(it.getColumnIndex(Phone.DISPLAY_NAME)))
                     Contact(it.getString(it.getColumnIndex(Phone.DISPLAY_NAME)),
                             it.getString(it.getColumnIndex(Phone.NUMBER)))
                 }.also {
+                    // and save the contact to the database
                     viewModel?.saveContact(it)
                 }
             }

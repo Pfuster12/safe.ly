@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">safely</string>
 
+    <!-- Main safely help string -->
+    <string name="help_text">ALERT! I might be in danger, if I do not text back in 5 minutes please call an emergency line.</string>
+
+    <string name="location_time_text">I was in this location, %1$s
+        \\n at this time: %2$s
+        \\n Sent by safe.ly</string>
+
+    <string name="sms_sent_placeholder">Message sent to %1$s&#8230;</string>
+
     <!-- Main Activity strings-->
     <string name="toolbar_title">safe.ly</string>
     <string name="contact_button">Add Contact</string>
