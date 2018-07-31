@@ -14,8 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_chevron_right" />
-                            <entry key="sourceFile" value="C:\Users\pfust\OneDrive\material icons\chevron-right.svg" />
+                            <entry key="height" value="474" />
+                            <entry key="outputName" value="ic_help_scene" />
+                            <entry key="overrideSize" value="true" />
+                            <entry key="sourceFile" value="C:\Users\pfust\OneDrive\Android Projects\safely\help_scene.svg" />
+                            <entry key="width" value="705" />
                           </map>
                         </option>
                       </PersistentState>

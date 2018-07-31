@@ -10,6 +10,17 @@
 
     <string name="sms_sent_placeholder">Message sent to %1$s&#8230;</string>
 
+    <!-- Welcome screens info text -->
+    <string name="welcome_screen_1_text">safe.ly let\'s you send an alert message in situations of danger to all your chosen emergency contacts instantly, with the press of the safe.ly button.</string>
+    <string name="welcome_screen_2_text">Just add your favorite emergency contacts stored in your phone.</string>
+    <string name="welcome_screen_3_text">When you feel in danger, keep the app open and press the button for at least 4 seconds. Your contacts will be alerted with your location and time sent.</string>
+
+    <string name="sms_permission_button">Give SMS permission</string>
+    <string name="try_out_text">Try it out!</string>
+    <string name="welcome_screen_4_text">Don\'t forget to text them back if it was a false alarm! \n Tap anywhere to start.</string>
+
+    <string name="start_button_welcome">Start using safe.ly</string>
+
     <!-- Main Activity strings-->
     <string name="toolbar_title">safe.ly</string>
     <string name="contact_button">Add Contact</string>

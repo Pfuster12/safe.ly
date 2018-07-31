@@ -184,7 +184,6 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
         }
     }
 
-
     /**
      * Helper fun to initialize the view model and observe the contacts live data held
      * in the model observing changes to the database.

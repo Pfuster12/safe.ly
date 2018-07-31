@@ -9,7 +9,7 @@ import com.android.lightmass.safely.R
 import kotlinx.android.synthetic.main.activity_welcome_screen.*
 
 // constants
-const val WELCOME_SCREENS = 3
+const val WELCOME_SCREENS = 4
 
 class WelcomeScreenActivity : AppCompatActivity() {
 
@@ -51,13 +51,18 @@ class WelcomeScreenActivity : AppCompatActivity() {
      * Inner view pager class for the fragments showing the welcome information
      */
     class WelcomeViewPager(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+        // get fragments to show
         override fun getItem(position: Int): Fragment {
             return when (position) {
-                0 -> WelcomeOne()
-                else -> WelcomeOne()
+                0 -> WelcomeOneFragment()
+                1 -> WelcomeTwoFragment()
+                2 -> WelcomeThreeFragment()
+                3 -> WelcomeFourFragment()
+                else -> WelcomeOneFragment()
             }
         }
 
+        // show the number of fragments
         override fun getCount() = WELCOME_SCREENS
     }
 }
