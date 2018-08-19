@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.android.lightmass.safely.R
-import com.android.lightmass.safely.pojos.Contact
+import com.android.lightmass.safely.model.Contact
 import kotlinx.android.synthetic.main.fragment_contacts.view.*
 import com.android.lightmass.safely.viewmodel.ContactsViewModel
 import kotlinx.android.synthetic.main.fragment_contacts.*

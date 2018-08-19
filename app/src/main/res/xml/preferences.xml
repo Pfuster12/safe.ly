@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+    android:title="@string/main_category">
+
+        <SwitchPreference
+            android:key="@string/call_emergency_title"
+            android:title="@string/call_emergency_title"
+            android:defaultValue="false"
+            android:textAppearance="@style/TertiaryTextTheme"/>
+
+        <EditTextPreference
+            android:key="@string/edit_default_alert_message"
+            android:title="@string/edit_default_alert_message"
+            android:textAppearance="@style/TertiaryTextTheme"
+            android:hint="Type the message..."
+            android:defaultValue="@string/help_text"
+            android:summary="@string/help_text"
+            android:maxLines="@integer/max_text_lines"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/about_category">
+
+        <Preference
+            android:selectable="false"
+            android:summary="@string/app_info" />
+    </PreferenceCategory>
+</PreferenceScreen>

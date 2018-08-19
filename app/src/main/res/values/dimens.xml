@@ -5,6 +5,7 @@
     <dimen name="half_general_margin">8dp</dimen>
     <dimen name="general_margin">16dp</dimen>
     <dimen name="double_general_margin">32dp</dimen>
+    <dimen name="triple_general_margin">48dp</dimen>
     <dimen name="contact_button_height">36dp</dimen>
     <dimen name="contact_button_radius">18dp</dimen>
     <dimen name="contact_button_margin_start">60dp</dimen>

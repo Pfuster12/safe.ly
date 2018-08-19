@@ -4,7 +4,7 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
-import com.android.lightmass.safely.pojos.Contact
+import com.android.lightmass.safely.model.Contact
 
 /**
  * Room database class, creates db file and gives access to the database dao (data access object).

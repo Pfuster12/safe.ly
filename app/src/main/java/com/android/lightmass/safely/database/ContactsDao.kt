@@ -5,7 +5,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import com.android.lightmass.safely.pojos.Contact
+import com.android.lightmass.safely.model.Contact
 
 @Dao
 interface ContactsDao {

@@ -3,9 +3,8 @@ package com.android.lightmass.safely.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
 import android.content.Context
-import android.net.Uri
 import com.android.lightmass.safely.data.ContactsRepo
-import com.android.lightmass.safely.pojos.Contact
+import com.android.lightmass.safely.model.Contact
 
 /**
  * [ViewModel] subclass handles providing the ui with the live data instance holding

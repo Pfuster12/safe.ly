@@ -1,14 +1,13 @@
 package com.android.lightmass.safely.data
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import com.android.lightmass.safely.database.ContactsDao
 import com.android.lightmass.safely.database.ContactsDatabase
-import com.android.lightmass.safely.pojos.Contact
+import com.android.lightmass.safely.model.Contact
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 

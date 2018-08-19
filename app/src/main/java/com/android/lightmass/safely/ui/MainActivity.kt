@@ -1,6 +1,5 @@
 package com.android.lightmass.safely.ui
 
-import android.Manifest
 import android.animation.Animator
 import android.app.Activity
 import android.app.LoaderManager
@@ -20,22 +19,22 @@ import android.provider.ContactsContract
 import android.support.animation.DynamicAnimation
 import android.support.animation.SpringAnimation
 import android.support.animation.SpringForce
-import android.support.v4.app.ActivityCompat
 import android.telephony.SmsManager
-import android.transition.Fade
+import android.transition.Slide
 import com.android.lightmass.safely.R
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import com.android.lightmass.safely.pojos.Contact
+import com.android.lightmass.safely.model.Contact
 import com.android.lightmass.safely.viewmodel.ContactsViewModel
 import kotlinx.android.synthetic.main.bubble_message.view.*
 import android.util.TypedValue.COMPLEX_UNIT_DIP
+import android.view.Gravity
 import android.widget.LinearLayout
+import org.jetbrains.anko.defaultSharedPreferences
 
 // constants
 const val REQUEST_SELECT_CONTACT = 1
@@ -91,13 +90,17 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // set window transitions
-        window.enterTransition = Fade()
+        window.enterTransition = Slide(Gravity.BOTTOM)
         window.allowEnterTransitionOverlap = true
         setContentView(R.layout.activity_main)
+
+        // set the preferences to default
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
 
         // show welcome screen if its the first time opening the app,
         showWelcomeScreenFirstTime()
 
+        // postpone animation enter
         postponeEnterTransition()
 
         // grab the screen width and height
@@ -152,11 +155,9 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
             showAddContactButton()
         }
 
-        /*
-         * Share action button sends a link through an intent
-         */
-        share_action_button.setOnClickListener {
-            shareAction()
+        // set the settings button to launch the settings activity
+        settings_action_button.setOnClickListener {
+            Intent(this, SettingsActivity::class.java).also { startActivity(it) }
         }
 
         // set the safely button press
@@ -173,12 +174,12 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
      */
     private fun showWelcomeScreenFirstTime() {
         // grab the preferences,
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val prefs = defaultSharedPreferences
 
         // if the screen hasn't been shown,
         if (prefs.getBoolean(WELCOME_SHOWN_PREFS, true)) {
             // set the prefs to true,
-            prefs.edit().putBoolean(WELCOME_SHOWN_PREFS, true).apply()
+            prefs.edit().putBoolean(WELCOME_SHOWN_PREFS, false).apply()
             // start the welcome activity
             Intent(this, WelcomeScreenActivity::class.java).also { startActivity(it) }
         }
@@ -214,22 +215,22 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
      */
     private fun onSafelyButtonPressed(event: MotionEvent) = when(event.actionMasked) {
         // when the user presses down
-            MotionEvent.ACTION_DOWN -> {
-                onSafelyButtonDown()
-                true
+        MotionEvent.ACTION_DOWN -> {
+            onSafelyButtonDown()
+            true
             }
-            MotionEvent.ACTION_UP -> {
-                // cancel the timer on up
-                timer?.cancel()
-                // cancel animation
-                cancelAnimation()
-                true
+        MotionEvent.ACTION_UP -> {
+            // cancel the timer on up
+            timer?.cancel()
+            // cancel animation
+            cancelAnimation()
+            true
             }
-            MotionEvent.ACTION_CANCEL -> {
-                cancelAnimation()
-                true
+        MotionEvent.ACTION_CANCEL -> {
+            cancelAnimation()
+            true
             }
-            else -> true
+        else -> true
         }
 
     /**
@@ -264,7 +265,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
 
     /**
      * Convenience method to get the contacts phone numbers from the list subscribed
-     * to the [Contact] database.
+     * to the [Contact] database and send an sms. Sets off a message bubble too.
      */
     private fun sendSMSToContacts() {
         // iterate through the contacts,
@@ -287,7 +288,6 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
      * taking place.
      */
     private fun addMessageBubble(message: String, displayTime: Long) {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS),1);
         // inflate,
         val bubble = LayoutInflater.from(this).inflate(R.layout.bubble_message, message_bubble_container, false)
         // make the text show the message,
@@ -418,23 +418,6 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
     }
 
     /**
-     * Helper fun to launch an intent chooser with share text
-     */
-    private fun shareAction() {
-        // launch a chooser to share a text with the app link
-        Intent(Intent.ACTION_SEND).setType("text/plain")
-                // subject
-                .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
-                // main text
-                .putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text))
-                // send intent chooser
-                .let {
-                    startActivity(Intent.createChooser(it,
-                            getString(R.string.share_chooser_title)))
-                }
-    }
-
-    /**
      * Convenience method to launch a last animation and set the press animation view
      * back to default values.
      */
@@ -496,6 +479,14 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
     }
 
     /**
+     * Override on back pressed in main activity close the app to avoid returning to welcome
+     * screens
+     */
+    override fun onBackPressed() {
+        finishAfterTransition()
+    }
+
+    /**
      * CursorLoader implementation to manage async cursor call to the Contacts database.
      * Handled in the MainActivity class because a non static context object is needed.
      */
@@ -530,7 +521,6 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
                 cursor?.let {
                     // get the contact from the cursor,
                     it.moveToFirst()
-                    Log.e("CURSOR", it.getString(it.getColumnIndex(Phone.DISPLAY_NAME)))
                     Contact(it.getString(it.getColumnIndex(Phone.DISPLAY_NAME)),
                             it.getString(it.getColumnIndex(Phone.NUMBER)))
                 }.also {

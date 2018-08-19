@@ -22,6 +22,7 @@ class WelcomeFourFragment : Fragment() {
         // Inflate the layout for this fragment
         val root =  inflater.inflate(R.layout.fragment_welcome_four, container, false)
 
+        // tap on the screen to go to the main activity
         root.welcome_container.setOnClickListener {
             Intent(context, MainActivity::class.java).also { startActivity(it) }
         }

@@ -12,6 +12,10 @@ const val SPLASH_DURATION = 2000
 class SplashScreen : AppCompatActivity() {
 
     /**
+     * Global vars
+     */
+
+    /**
      * Functions
      */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,4 +37,6 @@ class SplashScreen : AppCompatActivity() {
             }
         }.start()
     }
+
+    //TODO stop activities from being able to be returned.
 }

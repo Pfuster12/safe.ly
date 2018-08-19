@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.SettingsActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/settings_activity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height">
+
+        <TextView
+            android:id="@+id/settings_activity_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_title"
+            android:layout_gravity="center"
+            style="@style/ToolbarTitle"/>
+
+         <ImageButton
+             android:contentDescription="@string/content_description_share_action"
+             android:id="@+id/share_action_button"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="end"
+             android:paddingTop="@dimen/general_margin"
+             android:paddingBottom="@dimen/general_margin"
+             android:paddingStart="@dimen/general_margin"
+             android:paddingEnd="@dimen/general_margin"
+             android:src="@drawable/ic_share_variant"
+             android:tint="@color/colorPrimaryDark"
+             android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageButton
+            android:id="@+id/back_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/general_margin"
+            android:paddingBottom="@dimen/general_margin"
+            android:paddingEnd="@dimen/general_margin"
+            android:src="@drawable/ic_keyboard_backspace"
+            android:tint="@color/colorPrimaryDark"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </android.support.v7.widget.Toolbar>
+
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.android.lightmass.safely.ui.SettingsFragment" />
+
+    <TextView
+        android:id="@+id/welcome_screens_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/general_margin"
+        android:background="?attr/selectableItemBackground"
+        android:text="@string/start_welcome_screen"
+        style="@style/TertiaryTextTheme"/>
+
+</LinearLayout>

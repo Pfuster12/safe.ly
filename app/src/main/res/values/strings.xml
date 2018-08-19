@@ -2,11 +2,11 @@
     <string name="app_name">safely</string>
 
     <!-- Main safely help string -->
-    <string name="help_text">ALERT! I might be in danger, if I do not text back in 5 minutes please call an emergency line.</string>
+    <string name="help_text">ALERT! I might be in danger, if I do not text back in 5 minutes please call an emergency line. </string>
 
     <string name="location_time_text">I was in this location, %1$s
-        \\n at this time: %2$s
-        \\n Sent by safe.ly</string>
+        \n at this time: %2$s
+        \n Sent by safe.ly</string>
 
     <string name="sms_sent_placeholder">Message sent to %1$s&#8230;</string>
 
@@ -22,6 +22,9 @@
     <string name="start_button_welcome">Start using safe.ly</string>
 
     <!-- Main Activity strings-->
+    <string name="content_description_contact_action">contacts</string>
+    <string name="content_description_share_action">share</string>
+    <string name="content_description_cancel_action">Cancel</string>
     <string name="toolbar_title">safe.ly</string>
     <string name="contact_button">Add Contact</string>
 
@@ -38,14 +41,22 @@
 
     <string name="name_placeholder_string">%1$s</string>
     <string name="number_placeholder_string">%1$s</string>
-
-    <string name="content_description_contact_action">contacts</string>
-    <string name="content_description_share_action">share</string>
-    <string name="content_description_cancel_action">Cancel</string>
     <string name="empty_contacts_text">There are no contacts yet. Use the add button in the main screen</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Preference screen strings -->
+    <string name="call_emergency_title">Call Emergency Services</string>
+    <string name="edit_default_alert_message">Edit Alert Message</string>
 
+    <string name="settings_title">Settings</string>
+
+    <string name="main_category">Main Settings</string>
+    <string name="about_category">About</string>
+
+    <string name="start_welcome_screen">Show Welcome Screens Again?</string>
+    <string name="share_setting_title">Share safe.ly with friends</string>
+    <string name="app_info">safe.ly v1.0
+        \n\nMade with Kotlin &#128522; &#x1F483;
+        \nCredit to freepik.com</string>
 </resources>
