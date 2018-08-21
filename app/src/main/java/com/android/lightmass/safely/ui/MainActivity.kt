@@ -1,5 +1,6 @@
 package com.android.lightmass.safely.ui
 
+import android.Manifest
 import android.animation.Animator
 import android.app.Activity
 import android.app.LoaderManager
@@ -8,6 +9,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.CursorLoader
 import android.content.Intent
 import android.content.Loader
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
@@ -19,6 +21,7 @@ import android.provider.ContactsContract
 import android.support.animation.DynamicAnimation
 import android.support.animation.SpringAnimation
 import android.support.animation.SpringForce
+import android.support.v4.content.ContextCompat
 import android.telephony.SmsManager
 import android.transition.Slide
 import com.android.lightmass.safely.R
@@ -252,10 +255,13 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
         timer = object : CountDownTimer(TIMER_DURATION.toLong(), COUNTDOWN_INTERVAL.toLong()) {
             // on finish send the alerts
             override fun onFinish() {
+                // send sms,
                 sendSMSToContacts()
+                // check prefs and dial the emergency services
+                dialEmergencyServices()
             }
 
-
+            // send bubbles for every second
             override fun onTick(millisUntilFinished: Long) {
                 addMessageBubble(getString(R.string.timer_message_bubble, millisUntilFinished.div(1000)),
                         COUNTDOWN_INTERVAL.toLong().div(2))
@@ -268,13 +274,17 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
      * to the [Contact] database and send an sms. Sets off a message bubble too.
      */
     private fun sendSMSToContacts() {
+        // grab the message from the preferences
+        // grab the preferences,
+        val prefs = defaultSharedPreferences
+        val alertPrefix = prefs.getString(getString(R.string.edit_default_alert_message), getString(R.string.prefix_alert_text))
         // iterate through the contacts,
         for (contact in contacts ?: listOf<Contact>()) {
             // get location,
             val location = "Bath"
             val time = "12:00"
             // and send the sms through the manager for each contact
-            sendSMSHelper(contact.name, contact.mobile, arrayListOf(getString(R.string.help_text), getString(R.string.location_time_text, location, time)))
+            sendSMSHelper(contact.name, contact.mobile, arrayListOf(alertPrefix, getString(R.string.location_time_text, location, time)))
 
             // compose a message to inform the user,
             val message = getString(R.string.sms_sent_placeholder, contact.name)
@@ -458,6 +468,23 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>,
 
     override fun onAnimationStart(animation: Animator?) {
         // do something
+    }
+
+    /**
+     * Helper fun to dial the emergency service through an intent. Checks for permission first.
+     */
+    private fun dialEmergencyServices() {
+        // get the call preference bool,
+        val prefs = defaultSharedPreferences
+        val callBool = prefs.getBoolean(getString(R.string.call_emergency_title), false)
+
+        if (callBool) {
+            // if true, launch a dial intent with emergency service number
+            Intent(Intent.ACTION_DIAL).also {
+                it.data = Uri.parse("tel:" + prefs.getString(getString(R.string.call_emergency_number), getString(R.string.default_emergency_number)))
+                startActivity(it)
+            }
+        }
     }
 
     /**

@@ -10,13 +10,28 @@
             android:textAppearance="@style/TertiaryTextTheme"/>
 
         <EditTextPreference
+            android:dependency="@string/call_emergency_title"
+            android:key="@string/call_emergency_number"
+            android:title="@string/call_emergency_number"
+            android:textAppearance="@style/TertiaryTextTheme"
+            android:hint="Type emergency number..."
+            android:defaultValue="@string/default_emergency_number"
+            android:summary="@string/default_emergency_number"
+            android:maxLines="@integer/max_em_num_lines"/>
+
+        <EditTextPreference
             android:key="@string/edit_default_alert_message"
             android:title="@string/edit_default_alert_message"
             android:textAppearance="@style/TertiaryTextTheme"
             android:hint="Type the message..."
-            android:defaultValue="@string/help_text"
-            android:summary="@string/help_text"
+            android:defaultValue="@string/prefix_alert_text"
+            android:summary="@string/prefix_alert_text"
             android:maxLines="@integer/max_text_lines"/>
+
+        <Preference
+            android:key="@string/default_text_value"
+            android:title="@string/default_text_value"
+            android:selectable="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

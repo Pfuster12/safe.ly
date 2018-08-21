@@ -33,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // set the welcome screen launch
-        welcome_screens_action.setOnClickListener {
+        welcome_screens_action.setOnClickListener { _ ->
             Intent(this, WelcomeScreenActivity::class.java).also { startActivity(it) }
         }
     }

@@ -2,7 +2,7 @@
     <string name="app_name">safely</string>
 
     <!-- Main safely help string -->
-    <string name="help_text">ALERT! I might be in danger, if I do not text back in 5 minutes please call an emergency line. </string>
+    <string name="prefix_alert_text">ALERT! I might be in danger, if I do not text back in 5 minutes please call an emergency line. </string>
 
     <string name="location_time_text">I was in this location, %1$s
         \n at this time: %2$s
@@ -46,8 +46,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Preference screen strings -->
-    <string name="call_emergency_title">Call Emergency Services</string>
+    <string name="call_emergency_title">Dial Emergency Services</string>
+    <string name="call_emergency_number">Emergency Number to Dial</string>
+    <string name="default_emergency_number">112</string>
+
     <string name="edit_default_alert_message">Edit Alert Message</string>
+    <string name="default_text_value">Use Default Text</string>
 
     <string name="settings_title">Settings</string>
 
@@ -59,4 +63,18 @@
     <string name="app_info">safe.ly v1.0
         \n\nMade with Kotlin &#128522; &#x1F483;
         \nCredit to freepik.com</string>
+
+    <!-- Emergency Service numbers -->
+    <string name="europe_em_num">112</string>
+    <string name="us_em_num">911</string>
+    <string name="china_em_num">110</string>
+    <string name="hongkong_em_num">999</string>
+    <string name="india_em_num">100</string>
+    <string name="israel_em_num">100</string>
+    <string name="japan_em_num">110</string>
+    <string name="korea_em_num">110</string>
+    <string name="singapore_em_num">999</string>
+    <string name="australia_em_num">911</string>
+    <string name="southafrica_em_num">10111</string>
+    <string name="morocco_em_num">19</string>
 </resources>
